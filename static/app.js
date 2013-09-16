@@ -91,7 +91,7 @@ $(function() {
     this.idbna = false;
     var omaigawd = function(err) {
       if (err === undefined) {
-        this.idbna = true;
+        self.idbna = true;
       }
       self.idbfailure = true;
       $rootScope.$broadcast("idbfailure");
