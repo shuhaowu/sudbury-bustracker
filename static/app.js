@@ -158,7 +158,6 @@ $(function() {
             return;
           }
 
-          console.log(result.value);
           stops.push(result.value);
           result.continue();
         });
@@ -197,15 +196,17 @@ $(function() {
   }]);
 
 
-  app.controller("MainController", ["$scope", "$location", "DataService", function($scope, $location, DataService) {
+  app.controller("MainController", ["$scope", "$location", "$timeout", "DataService", function($scope, $location, $timeout, DataService) {
     checkIdb(DataService, $location);
 
     var refreshList = function() {
       $scope.loaded = false;
-      $scope.stops = DataService.listStops();
-      $scope.stops.then(function() {
-        $scope.loaded = true;
-      });
+      $timeout(function() {
+        $scope.stops = DataService.listStops();
+        $scope.stops.then(function() {
+          $scope.loaded = true;
+        });
+      }, 0);
     };
 
     $scope.$on("stop-changed", refreshList);
