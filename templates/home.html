@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html ng-app="sbt">
+  <head>
+    <title>Better Sudbury Bus Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/vendors/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="app-manifest" href="/manifest.webapp">
+    <style>
+      footer {
+        text-align: center;
+        font-size: 0.8em;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+  {% raw %}
+    <nav class="navbar navbar-default navbar-inverse" role="navigation" ng-controller="NavbarController">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Better Sudbury Bus Tracker</a>
+      </div>
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="" ng-show="moz" ng-click="install()">Install to Device</a></li>
+          <li><a href="/about">FAQ</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="" ng-click="addStop()">Add Stop</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="alert hidden" id="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <span id="alert-text"></span>
+      </div>
+    </div>
+
+    <div class="container hidden" id="welcome-message">
+      <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <span>
+          <p><strong>Welcome!</strong> If you used this app before, you may realize this has been upgraded.</p>
+          <p>The approach where we use login has been abandoned in favour of using storage on the client side. If you want your old data back, <a href="http://bus-legacy.shuhaowu.com">click here</a> to go to the old site and export your data. That site will soon be shutdown.</p>
+          <p>In addition, the source code to this app has been released <a href="https://github.com/shuhaowu/sudbury-bustracker">here</a>.</p>
+          <p>This is the only time you will receive this message. Enjoy the app :)</p>
+        </span>
+      </div>
+    </div>
+
+    <div class="container" ng-view>
+    </div>
+
+    <footer>
+      Copyright &copy; <a href="https://shuhaowu.com">Shuhao Wu</a> 2013 <br />
+      <a href="http://mybus.sudbury.ca/MobileQuery.aspx">Official Tracker</a> | <a href="https://github.com/shuhaowu/sudbury-bustracker">Source Code</a>
+    </footer>
+
+    <script type="text/ng-template" id="main">
+      <div class="text-center" ng-hide="loaded">
+      <img src="/static/loading.gif" alt="Loading..." />
+      </div>
+
+      <div class="row" ng-hide="stops || !loaded">
+        <div class="col-md-12">
+          <h4 class="text-center hidden-xs">You haven't added any stops yet! Press "Add" to add some favourates.</h4>
+          <h4 class="text-center visible-xs">You haven't added any stops yet! Press the menu bar and then "Add" to add some favourates.</h4>
+        </div>
+      </div>
+
+      <div class="list-group" ng-show="stops && loaded">
+        <a class="list-group-item" ng-repeat="stop in stops" ng-href="/stop/{{ stop.number }}">
+          {{ stop.stopname }} - {{ stop.number }}
+        </a>
+      </div>
+
+      <form>
+      <div class="input-group">
+        <input type="text" class="form-control" ng-model="checknum" placeholder="Enter the 4 digits bus code here" />
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit" ng-click="check()">
+            Check
+          </button>
+        </span>
+      </div>
+      </form>
+      <p>&nbsp;</p>
+    </script>
+
+    <script type="text/ng-template" id="about">
+    <h4>FAQ</h4>
+    <p><strong>What is this?</strong></p>
+    <p>This is an unofficial bus tracker for the city of Sudbury.</p>
+    <p><strong>Why?</strong></p>
+    <p>Because I can, and also the official bus website sucks. No seriously, check it out: <a href="http://mybus.sudbury.ca/MobileQuery.aspx">http://mybus.sudbury.ca/MobileQuery.aspx</a></p>
+    <p><strong>How do I use this?</strong></p>
+    <p>You can add stops from the menu bar. Click on each favourate stop will give you the realtime bus schedule for that stop. That page automatically refreshes so you don't have to!</p>
+    <p><strong>Why does this not work!?</strong></p>
+    <p>I recommended that you try using <a href="http://www.mozilla.org/en-US/firefox/fx/">Firefox</a> on your desktop and <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox for Android</a> to guarentee compatibility. If you use these, you can even install this app as a native app (on Android or desktop!)</p>
+    <p><strong>Seriously. It's broken</strong></p>
+    <p>Maybe. File an issue at <a href="https://github.com/shuhaowu/sudbury-bustracker/issues">https://github.com/shuhaowu/sudbury-bustracker/issues</a></p>
+    <p><strong>Who are you?</strong></p>
+    <p>I'm <a href="https://shuhaowu.com">Shuhao</a>.</p>
+    </script>
+
+    <script type="text/ng-template" id="onestop">
+      <div class="text-center" ng-hide="loaded" style="margin-bottom: 1em;">
+        <img src="/static/loading.gif" alt="Loading..." />
+      </div>
+
+      <p ng-show="nodeparture && loaded" class="text-center">
+        <strong>There are no departures for {{ stopname }} ({{ number }}).</strong>
+      </p>
+
+      <ul class="list-group" ng-hide="nodeparture || !loaded">
+        <li class="list-group-item" ng-repeat="b in busses">
+          <h4 class="list-group-item-heading">{{ b[0] }}</h4>
+          <p class="list-group-item-text">
+            Next bus: <strong ng-show="b[1] != 0">{{ b[1] }} minutes</strong> <strong ng-show="b[1] == 0">now!</strong>
+            <span ng-show="b[2] != -1">
+            <br />
+            The one after: <strong ng-show="b[2] != 0">{{ b[2] }} minutes</strong> <strong ng-show="b[2] == 0">now!</strong>
+            </span>
+          </p>
+        </li>
+      </ul>
+
+      <div class="clearfix"></div>
+      <div class="pull-right">
+      <button type="button" class="btn btn-default btn-sm" disabled="disabled" ng-show="updated">
+        Last updated: {{ updated }}
+      </button>
+      <button type="button" class="btn btn-danger btn-sm" ng-click="delete()">
+        <span class="glyphicon glyphicon-trash"></span>
+        <span class="sr-only">Delete</span>
+      </button>
+      <button type="button" class="btn btn-info btn-sm" ng-click="refresh()">
+        <span class="glyphicon glyphicon-refresh"></span>
+        <span class="sr-only">Refresh</span>
+      </button>
+      </div>
+      <div class="clearfix"></div>
+      <div style="height: 1.5em;"></div>
+    </script>
+
+    <script type="text/ng-template" id="failure">
+      <p class="text-center">Your browser is not supported or you're in private browsing mode.
+      <br /><span class="visible-md visible-lg">This configuration will not work with this app. Try <a href="http://www.mozilla.org/en-US/firefox/fx/">Firefox</a> instead!</span>
+      <span class="visible-sm visible-xs">This configuration will not work with this app. Try <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox for Android</a>  instead!</span></p>
+    </script>
+
+    {% endraw %}
+
+    <script src="/static/vendors/jquery.min.js"></script>
+    <script src="/static/vendors/bootstrap.min.js"></script>
+    <script src="/static/vendors/angular.min.js"></script>
+    <script src="/static/vendors/angular-route.min.js"></script>
+    <script src="/static/vendors/indexeddb.min.js"></script>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

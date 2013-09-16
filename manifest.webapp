@@ -1,0 +1,14 @@
+{
+  "name": "Sudbury Bus Tracker",
+  "description": "Unofficial, but better bus tracker for sudbury",
+  "version": "1.0",
+  "launch_path": "/",
+  "icons": {
+    "128": "/static/icon-128.png"
+  },
+  "developer": {
+    "name": "Shuhao Wu",
+    "url": "https://shuhaowu.com"
+  },
+  "default_locale": "en"
+}
