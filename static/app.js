@@ -97,12 +97,16 @@ $(function() {
       $rootScope.$broadcast("idbfailure");
     };
 
-    this.db = idb.open("sbt", 1, function(db) {
-      $("#welcome-message").removeClass("hidden");
-      db.createObjectStore("stops", {keyPath: "number"});
-    });
+    if (!window.indexedDB) {
+      omaigawd();
+    } else {
+      this.db = idb.open("sbt", 1, function(db) {
+        $("#welcome-message").removeClass("hidden");
+        db.createObjectStore("stops", {keyPath: "number"});
+      });
 
-    this.db.then(undefined, omaigawd);
+      this.db.then(undefined, omaigawd);
+    }
 
     this.checkStop = function(stopnum) {
       return $http({
