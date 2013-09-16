@@ -2,8 +2,8 @@ import re
 import urllib
 
 # BeautifulSoup for legacy reasons. This code is old!
-from BeautifulSoup import BeautifulSoup, NavigableString
-from flask import Flask, render_template, jsonify, abort, send_file
+from BeautifulSoup import BeautifulSoup
+from flask import Flask, render_template, jsonify, send_file
 
 VERSION = "2.0"
 
@@ -123,7 +123,7 @@ def manifest():
 @app.route("/")
 @app.route("/<path:path>")
 def main(path=None):
-  return render_template("home.html")
+  return render_template("home.html", ANALYTICS=app.config.get("ANALYTICS"))
 
 if __name__ == "__main__":
   if app.debug:
