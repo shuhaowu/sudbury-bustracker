@@ -1,8 +1,9 @@
 "use strict";
 
+if (navigator.mozApps) {
 // From https://gist.github.com/potch/2586957
-var mozApp=function(){function e(){return!!c}function f(a,c){var d=navigator.mozApps.install(b);return d.onsuccess=a,d.onerror=c,d.addEventListener("error",function(){alert("Installation Failed with Error: "+this.error.name)}),d}function g(){return c?c.uninstall():void 0}var a=document.querySelector('link[rel="app-manifest"]'),b=a.href,c=!1,d=navigator.mozApps.getSelf();return d.onsuccess=function(){c=d.result},{isRunning:e,install:f,uninstall:g,manifest:b}}();
-
+  var mozApp=function(){function e(){return!!c}function f(a,c){var d=navigator.mozApps.install(b);return d.onsuccess=a,d.onerror=c,d.addEventListener("error",function(){alert("Installation Failed with Error: "+this.error.name)}),d}function g(){return c?c.uninstall():void 0}var a=document.querySelector('link[rel="app-manifest"]'),b=a.href,c=!1,d=navigator.mozApps.getSelf();return d.onsuccess=function(){c=d.result},{isRunning:e,install:f,uninstall:g,manifest:b}}();
+}
 $(function() {
   $('.navbar-ex1-collapse').click('li', function() {
       $('.navbar-ex1-collapse').collapse('hide');
@@ -55,7 +56,6 @@ $(function() {
       }
 
       if (check) {
-        console.log("cancelling checking...");
         $timeout.cancel(check);
       }
     });
@@ -116,7 +116,6 @@ $(function() {
       this.checkStop(stopnum).then(
         function(args) {
           var data = args.data;
-          console.log(data);
           if (!stopname) {
             stopname = data.stopname;
           }
@@ -159,6 +158,7 @@ $(function() {
             return;
           }
 
+          console.log(result.value);
           stops.push(result.value);
           result.continue();
         });
