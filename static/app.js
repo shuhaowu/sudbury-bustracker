@@ -287,7 +287,7 @@ $(function() {
 
   }]);
 
-  app.controller("NavbarController", ["$scope", "$location", "DataService", function($scope, $location, DataService) {
+  app.controller("NavbarController", ["$scope", "$location", "$timeout", "DataService", function($scope, $location, $timeout, DataService) {
     checkIdb(DataService, $location);
 
     $scope.addStop = function() {
@@ -303,7 +303,9 @@ $(function() {
       DataService.addStop(stopnum, stopname);
     };
 
-    $scope.moz = !!navigator.mozApps && !mozApp.isRunning();
+    $timeout(function(){
+      $scope.moz = !!navigator.mozApps && !mozApp.isRunning();
+    }, 0);
     $scope.install = function() {
       mozApp.install(function() {
         toast("Installation successful! Check your apps for this app.", "success");
