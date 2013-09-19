@@ -4,6 +4,7 @@
   "version": "1.0",
   "launch_path": "/",
   "icons": {
+    "60": "/static/icon-60.png",
     "128": "/static/icon-128.png"
   },
   "developer": {
