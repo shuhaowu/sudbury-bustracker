@@ -4,12 +4,18 @@ import urllib
 # BeautifulSoup for legacy reasons. This code is old!
 from BeautifulSoup import BeautifulSoup
 from flask import Flask, render_template, jsonify, send_file
+from flask.ext.appcache import Appcache
 
 VERSION = "2.0"
 
 app = Flask(__name__)
 app.config.from_pyfile("settings.py")
 app.config.from_pyfile("settings_local.py", silent=True)
+
+appcache = Appcache(app)
+appcache.add_urls("/")
+appcache.add_folder("static")
+
 
 class AppURLOpener(urllib.FancyURLopener):
   version = "BetterSudburyBusTracker/{}".format(VERSION)

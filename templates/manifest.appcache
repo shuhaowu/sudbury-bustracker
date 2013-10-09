@@ -1,0 +1,12 @@
+CACHE MANIFEST
+# version {{ hash }}
+
+CACHE:
+{% for url in urls %}{{ url }}
+{% endfor %}
+
+FALLBACK:
+/ /
+
+NETWORK:
+*
