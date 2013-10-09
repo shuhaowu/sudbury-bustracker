@@ -92,11 +92,6 @@ class BusStop(object):
     else:
       return nextbus
 
-@app.after_request
-def after_request(response):
-  response.cache_control.no_cache = True
-  return response
-
 @app.route("/check/<stopnum>")
 def check_stop(stopnum):
   """ Checks bus stop via GET. Returns JSON with info. Sample output:
