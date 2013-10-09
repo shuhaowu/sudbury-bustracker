@@ -1,5 +1,6 @@
 import re
 import urllib
+import os
 
 # BeautifulSoup for legacy reasons. This code is old!
 from BeautifulSoup import BeautifulSoup
@@ -14,7 +15,7 @@ app.config.from_pyfile("settings_local.py", silent=True)
 
 appcache = Appcache(app)
 appcache.add_urls("/")
-appcache.add_folder("static")
+appcache.add_folder(os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"), base="/static")
 
 
 class AppURLOpener(urllib.FancyURLopener):
