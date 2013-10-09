@@ -11,5 +11,6 @@
     "name": "Shuhao Wu",
     "url": "https://shuhaowu.com"
   },
-  "default_locale": "en"
+  "default_locale": "en",
+  "appcache_path": "/manifest.appcache"
 }
