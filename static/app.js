@@ -50,7 +50,7 @@ $(function() {
 
     $rootScope.$on("$routeChangeSuccess", function(e, current, previous) {
       if ($location.path() === "/" || $location.path() === "/failure") {
-        $('.navbar-brand').text("Better Sudbury Bus Tracker");
+        $('.navbar-brand').text("Sudbury Transit");
       } else {
         $('.navbar-brand').html("<span class=\"glyphicon glyphicon-chevron-left\"></span>");
       }
